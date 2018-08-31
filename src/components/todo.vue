@@ -1,18 +1,40 @@
 <template >
     <div class="todo" v-on:keyup.13="addTask">
         <h1 class="title">Checklist</h1>
-        <ul class="tasks" v-bind:class="{Long: tasksLength }">
-            <li v-for="task in tasks"   :class="{complete : task.complete}">
-                <label v-if="!task.complete" class="list" v-on:click="remove(task.id)" >
-                    <ui-checkbox v-model="task.complete"    />
-                    {{task.name}}
-                </label>
-            </li>
-        </ul>
+
+        
+         <ui-tabs type="text">
+            <ui-tab title="Pending">
+                <ul class="tasks" v-bind:class="{Long:  pendingLength}">
+                    <li v-for="task in tasks"   :class="{complete : task.complete}">   
+                        <label v-if="!task.complete" class="list" v-on:click="remove(task.id,1)" >
+                            <ui-checkbox v-model="task.complete"    />
+                            {{task.name}}
+                        </label>
+                    </li>
+                </ul>
+            </ui-tab>
+
+
+            <ui-tab title="Complete">
+                <ul class="tasks" v-bind:class="{Long:  compliteLength}">
+                    <li v-for="task in tasks"   :class="{complete : task.complete}">
+                        <label v-if="task.complete" class="list" v-on:click="remove(task.id,0)" >
+                            <ui-checkbox v-model="task.complete"    />
+                            {{task.name}}
+                        </label>
+                    </li>
+                </ul>
+            </ui-tab>
+
+        </ui-tabs>
+
         <div class="flor">
             <ui-textbox placeholder="e.g. 'read vue.js guide'" v-model="newTaskName"></ui-textbox>
             <ui-button color="primary" @click="addTask"  icon="add">Add</ui-button>
         </div>
+
+        
     </div>
 </template>
 
@@ -49,23 +71,41 @@
                 // console.log(this.tasks.length);
                 // this.remove();  
             },
-            remove (id) {
-                this.tasks.forEach((item,i,arr)=> {
-                  if (item.id == id) this.tasks[i].complete = true;
-                });
+            remove (id,fromPending) {
+                if(fromPending){
+                    this.tasks.forEach((item,i,arr)=> {
+                      if (item.id == id) this.tasks[i].complete = true;
+                    });
+                }else{
+                    this.tasks.forEach((item,i,arr)=> {
+                      if (item.id == id) this.tasks[i].complete = false;
+                    });     
+                }
                 this.chechLength();                
             },
             chechLength (){
-                let completeCounter = this.tasks.filter((item)=> {
+                let  counterPending= this.tasks.filter((item)=> {
                   return !item.complete ;
                 }).length;
-                console.log(completeCounter);
-                if(completeCounter > 12) {
-                    this.tasksLength = true; 
+                let counterComplite = this.tasks.filter((item)=> {
+                  return item.complete ;
+                }).length;
+                console.log(counterComplite);
+                if(counterComplite > 7) {
+                    this.compliteLength = true; 
                 }else{
-                    this.tasksLength = false; 
+                    this.compliteLength = false; 
+                }
+                console.log(counterPending);
+                if(counterPending > 7) {
+                    this.pendingLength = true; 
+                }else{
+                    this.pendingLength = false; 
                 }
             }
+        },
+        components: {
+
         }
     };
 </script>
@@ -90,7 +130,7 @@
             list-style: none;
             padding: 0;
             overflow:scroll;
-            height:400px;
+            height:250px;
         }
         .flor {
             display: flex;
