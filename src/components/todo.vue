@@ -1,47 +1,65 @@
 <template>
     <div class="todo">
         <h1 class="title">Checklist</h1>
-        <ul class="tasks">
-            <li v-for="task in tasks" :class="{complete : task.complete}">
-                <label>
-                    <input type="checkbox" v-model="task.complete" />
-                    {{task.name}}
-                </label>
-            </li>
-        </ul>
-        <div>
-            <ui-textbox placeholder="e.g. 'read vue.js guide'" v-model="newTaskName"></ui-textbox>
+        <ui-tabs type="text" backgroundColor="clear">
+            <ui-tab title="Pending">
+                <ul class="tasks">
+                    <app-listItem :tasks=this.tasks :taskComplete=false></app-listItem>
+                </ul>
+            </ui-tab>
+            <ui-tab title="Complete">
+                <ul class="tasks">
+                    <app-listItem :tasks=this.tasks :taskComplete=true></app-listItem>
+                </ul>
+            </ui-tab>
+        </ui-tabs>
+        <div class="footer">
+            <ui-textbox placeholder="e.g. 'read vue.js guide'" v-model="newTaskName" class = "taskInput" v-on:keyup.enter.native="addTask"></ui-textbox>
             <ui-button color="primary" @click="addTask" icon="add">Add</ui-button>
         </div>
     </div>
 </template>
 
 <script>
+    import listItem from './listItem'
+
     export default {
+
         data () {
             return {
                 newTaskName : '',
-                tasks : [
-                    {name : 'create skeleton of todo', complete : true},
-                    {name : 'add ability to add tasks', complete : true},
-                    {name : 'clear task name after clicking "Add"', complete : false},
-                    {name : 'put "Add" button in one line with input', complete : false},
-                    {name : 'add new task by hitting Enter instead of clicking "Add"', complete : false},
-                    {name : 'replace <input> with <ui-checkbox> in tasks list', complete : false},
-                    {name : 'when task is complete cross it out', complete : false},
-                    {name : 'split tasks into "pending" and "complete" tabs using keen-ui component <ui-tabs>', complete : false},
-                    {name : 'don\'t allow to add empty tasks', complete : false},
-                    {name : 'make list of tasks scrollable, if there\'re are a lot of tasks', complete : false},
-                    {name : 'extract list item into a separate vue.js component', complete : false},
-                    {name : 'persist tasks list in a local storage', complete : false},
-                    {name : 'add animation on task completion', complete : false},
-                ]
+                tasks: []
+            }
+        },
+
+        components: {
+            'app-listItem': listItem
+        },
+
+        mounted() {
+            if (localStorage.getItem('tasks')) {
+                try {
+                    this.tasks = JSON.parse(localStorage.getItem('tasks'));
+                } catch(e) {
+                    localStorage.removeItem('tasks');
+                }
             }
         },
 
         methods : {
-            addTask () {
-                this.tasks.push({name : this.newTaskName, complete : false});
+            addTask () { 
+                var newTaskName = this.newTaskName.trim();
+                if (newTaskName =="") {
+                    return
+                }
+
+                this.tasks.push({name : newTaskName, complete : false});
+                this.newTaskName = "";
+                this.saveTasks();
+            },
+            saveTasks() {
+                const parsed = JSON.stringify(this.tasks);
+                localStorage.setItem('tasks', parsed);
             }
         }
     };
@@ -62,6 +80,18 @@
         .tasks {
             list-style: none;
             padding: 0;
+            height: 400px;
+            width: 400px;
+            overflow: auto;
+        }
+
+        .footer {
+            display: flex;
+
+            .taskInput {
+                flex-grow: 1;
+                padding-right:10px;
+            }
         }
     }
 </style>
