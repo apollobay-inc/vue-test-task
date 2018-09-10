@@ -16,6 +16,7 @@
         margin: 0;
         padding: 0;
         background: #eee;
+        overflow: hidden;
     }
 
     #app {
@@ -36,5 +37,5 @@
 
     html {
         font-size: 100%;
-    }
+    } 
 </style>
