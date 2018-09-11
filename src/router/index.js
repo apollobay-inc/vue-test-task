@@ -1,15 +1,15 @@
-import Vue from 'vue';
-import Router from 'vue-router';
-import todo from 'components/todo';
+import Vue from "vue";
+import Router from "vue-router";
+import Todo from "components/Todo";
 
 Vue.use(Router);
 
 export default new Router({
-  routes : [
-    {
-      path      : '/',
-      name      : 'todo',
-      component : todo
-    }
-  ]
-})
+    routes: [
+        {
+            path: "/",
+            name: "todo",
+            component: Todo
+        }
+    ]
+});
