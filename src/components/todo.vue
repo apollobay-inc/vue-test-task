@@ -33,6 +33,7 @@ import taskList from './taskList';
         mounted() {
             if(!localStorage.getItem('tasks').indexOf('undefined')) {
                 let localTasks = [
+                    {name : 'Pending task', complete : false},
                     {name : 'create skeleton of todo', complete : true},
                     {name : 'add ability to add tasks', complete : true},
                     {name : 'clear task name after clicking "Add"', complete : true},
@@ -45,7 +46,7 @@ import taskList from './taskList';
                     {name : 'make list of tasks scrollable, if there\'re are a lot of tasks', complete : true},
                     {name : 'extract list item into a separate vue.js component', complete : true},
                     {name : 'persist tasks list in a local storage', complete : true},
-                    {name : 'add animation on task completion', complete : false},
+                    {name : 'add animation on task completion', complete : true},
                 ];
                 localTasks.forEach(function (todo, index) {
                     todo.id = index
