@@ -8,7 +8,7 @@ import router from './router';
 
 import KeenUI from 'keen-ui';
 import 'keen-ui/dist/keen-ui.css';
-
+import './components/custom.scss';
 Vue.use(KeenUI);
 
 /* eslint-disable no-new */
