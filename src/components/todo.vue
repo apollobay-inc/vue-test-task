@@ -45,7 +45,7 @@
 </template>
 
 <script>
-    import { isEmpty, filter, map, pathEq, reverse, pipe } from 'ramda';
+    import { isEmpty, filter, map, pathEq, reverse, pipe, not } from 'ramda';
     import TodoItem from './TodoItem.vue';
 
     export default {
@@ -58,34 +58,14 @@
                 currentCompleted : false,
                 taskList : true,
                 error: '',
-                tasks : [
-                    {name : 'create skeleton of todo', complete : false},
-                    {name : 'add ability to add tasks', complete : false},
-                    {name : 'clear task name after clicking "Add"', complete : false},
-                    {name : 'put "Add" button in one line with input', complete : false},
-                    {name : 'add new task by hitting Enter instead of clicking "Add"', complete : false},
-                    {name : 'replace <input> with <ui-checkbox> in tasks list', complete : false},
-                    {name : 'when task is complete cross it out', complete : false},
-                    {name : 'split tasks into "pending" and "complete" tabs using keen-ui component <ui-tabs>', complete : false},
-                    {name : 'don\'t allow to add empty tasks', complete : false},
-                    {name : 'make list of tasks scrollable, if there\'re are a lot of tasks', complete : false},
-                    {name : 'extract list item into a separate vue.js component', complete : false},
-                    {name : 'persist tasks list in a local storage', complete : false},
-                    {name : 'add animation on task completion', complete : false},
-                ]
+                tasks : []
             }
         },
         created () {
-            const checkTasksInStorage = map(task => {
-                if (isEmpty(this.$localStorage.get(task.name))) {
-                    this.$localStorage.set(task.name, task.complete)
-                } else {
-                    const statusInStorage = this.$localStorage.get(task.name);
-                    task.complete = JSON.parse(statusInStorage);
-                }
-                return task;
-            });
-            this.tasks = checkTasksInStorage(this.tasks);
+            const tasks = JSON.parse(this.$localStorage.get('tasks'))
+            if (not(tasks)) return;
+
+            this.tasks = tasks
         },
         computed: {
             pandingTasks () {
@@ -101,7 +81,11 @@
                 return completedOrderByNew(this.tasks);
             },
             addTaskError () {
-                return !isEmpty(this.error);
+                const notEmpty = pipe(
+                    isEmpty,
+                    not
+                )
+                return notEmpty(this.error);
             },
             isPandingListEmpty () {
                 return isEmpty(this.pandingTasks);
@@ -109,37 +93,50 @@
         },
         methods : {
             addTask () {
-                if (isEmpty(this.newTaskName)) {
-                    this.error = 'Empty input';
-                    return;
-                }
-                if (this.checkIfAdded(this.newTaskName)) {
-                    this.error = 'Task already in list';
-                    return;
-                }
+                if (this.checkForInputErrors()) return;
 
-                this.error = '';
-                this.$localStorage.set(this.newTaskName, false);
                 const newTask = { name : this.newTaskName, complete : false };
                 this.tasks = [...this.tasks, newTask];
+                this.saveTaskInStorage();
                 this.newTaskName = '';
             },
-            checkIfAdded (taskName) {
+            checkForInputErrors () {
+                if (isEmpty(this.newTaskName)) {
+                    this.error = 'Empty task cannot be added';
+                    return true;
+                }
+                if (this.checkIfAdded(this.newTaskName, this.pandingTasks)) {
+                    this.error = 'Task already in list';
+                    return true;
+                }
+                if (this.checkIfAdded(this.newTaskName, this.completedTasks)) {
+                    this.error = 'You have done this task';
+                    return true;
+                }
+                
+                this.error = '';
+                return false;
+            },
+            checkIfAdded (taskName, list) {
                 const isTaskExist = pathEq(['name'], taskName);
                 const checkExists = pipe(
                     filter(isTaskExist),
-                    isEmpty
+                    isEmpty,
+                    not
                 )
-                return checkExists(this.tasks);
+                return checkExists(list);
+            },
+            saveTaskInStorage () {
+                this.$localStorage.set('tasks', JSON.stringify(this.tasks));
             },
             changeCurrentList () {
                 this.taskList = !this.taskList;
             },
             //Done, because something's wrong with check tick in ckecboxes when it's v-model
             changeStatus (status, task) {
-                this.$localStorage.set(task.name, status);
                 setTimeout(() => {
                     task.complete = status;
+                    this.saveTaskInStorage();
                 }, 100);
             }
         }
