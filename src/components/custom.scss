@@ -1,0 +1,44 @@
+$checkbox-border-color: rgba(0, 0, 0, 0.38);
+$checkbox-background-color: #ffffff00;
+$check-mark-color: rgba(0, 0, 0, 0.75);
+$white: #fff;
+$transtarent: #ffffff00;
+$radius: 30px;
+
+.ui-checkbox.is-checked .ui-checkbox__checkmark::after,
+.ui-checkbox__checkmark::after{
+    border-bottom: 0.125rem solid $check-mark-color;
+    border-right: 0.125rem solid $check-mark-color;
+}
+
+.ui-checkbox--color-primary.is-checked .ui-checkbox__checkmark::before,
+.ui-checkbox--color-primary:not(.is-disabled).is-checked:hover .ui-checkbox__checkmark::before, .ui-checkbox--color-primary:not(.is-disabled).is-checked.is-active .ui-checkbox__checkmark::before     {
+    background-color: $checkbox-background-color;
+    border-color: $checkbox-border-color;
+}
+
+.ui-textbox__input, .ui-textbox__textarea, .ui-tabs__body{
+    border: none;
+}
+
+.ui-button--type-primary.ui-button--color-primary{
+    border-radius: $radius;
+}
+
+.ui-tabs--background-color-default .ui-tabs__header,
+.ui-tabs--text-color-black .ui-tab-header-item{
+    background-color: $white;
+}
+.ui-tabs--text-color-active-primary .ui-tab-header-item.is-active{
+    border-radius: $radius;
+    background-color: #a6adb1;
+}
+.ui-tabs--text-color-active-primary .ui-tab-header-item.is-active{
+    color: $white;
+}
+.ui-tabs--indicator-color-primary .ui-tabs__active-tab-indicator{
+    background-color: $transtarent;
+}
+.ui-icon{
+    color:#a6adb1;
+}
