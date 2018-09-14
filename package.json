@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "keen-ui": "^1.0.0",
+    "ramda": "^0.25.0",
     "vue": "^2.1.10",
+    "vue-localstorage": "^0.6.2",
     "vue-router": "^2.2.0",
     "vuex": "^2.1.2"
   },
