@@ -5,7 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    tasks : [
+    tasks: [
         {name : 'create skeleton of todo', complete : true},
         {name : 'add ability to add tasks', complete : true},
         {name : 'clear task name after clicking "Add"', complete : true},
