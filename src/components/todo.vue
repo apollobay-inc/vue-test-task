@@ -43,7 +43,7 @@
     <div class="add">
       <ui-textbox
         class="textbox"
-        maxlength="100"
+        :maxlength=100
         placeholder="e.g. 'read vue.js guide'"
         v-model="newTaskName"
         @keydown-enter="addTask"
