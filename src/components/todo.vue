@@ -54,7 +54,7 @@
       ></ui-textbox>
       <ui-button
         color="primary"
-        :disabled="isAdd"
+        :disabled="!isAdd"
         @click="addTask"
         class="button"
         >Add item</ui-button
@@ -72,7 +72,7 @@ export default {
     return {
       newTaskName: "",
       tasks: [],
-      isAdd: true,
+      isAdd: false,
       stateTabs: [{ title: "Pending" }, { title: "Completed" }],
     };
   },
@@ -91,9 +91,9 @@ export default {
     },
     newTaskName: function (val) {
       if (val.length > 0) {
-        this.isAdd = false;
-      } else {
         this.isAdd = true;
+      } else {
+        this.isAdd = false;
       }
     },
   },
