@@ -62,7 +62,6 @@ export default {
     return {
       newTaskName: "",
       tasks: [],
-      isAddButtonEnable: false,
     };
   },
   created: function () {
