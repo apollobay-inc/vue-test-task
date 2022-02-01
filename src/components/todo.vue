@@ -2,45 +2,35 @@
   <div class="todo">
     <h1 class="title">Checklist</h1>
     <ui-tabs backgroundColor="clear">
-      <ui-tab
-        :key="tab.title"
-        :title="tab.title"
-        v-for="tab in stateTabs"
-      >
-        <div v-if="tab.title === 'Pending'">
-          <ul class="tasks">
-            <li
-              v-for="(task, index) in tasks"
-              :key="index"
-              :class="{ complete: task.complete }"
-            >
-              <div v-if="!task.complete">
-                <item
-                  :text="task.name"
-                  :isChecked="task.complete"
-                  v-model="task.complete"
-                ></item>
-              </div>
-            </li>
-          </ul>
-        </div>
-        <div v-if="tab.title === 'Completed'">
-          <ul class="tasks">
-            <li
-              v-for="(task, index) in tasks"
-              :key="index"
-              :class="{ complete: task.complete }"
-            >
-              <div v-if="task.complete">
-                <item
-                  :text="task.name"
-                  :isChecked="task.complete"
-                  v-model="task.complete"
-                ></item>
-              </div>
-            </li>
-          </ul>
-        </div>
+      <ui-tab key="Pending" title="Pending">
+        <ul class="tasks">
+          <li
+            v-for="(task, index) in pendingTasks"
+            :key="index"
+            :class="{ complete: task.complete }"
+          >
+            <item
+              :text="task.name"
+              :isChecked="task.complete"
+              v-model="task.complete"
+            ></item>
+          </li>
+        </ul>
+      </ui-tab>
+      <ui-tab key="Completed" title="Completed">
+        <ul class="tasks">
+          <li
+            v-for="(task, index) in completedTasks"
+            :key="index"
+            :class="{ complete: task.complete }"
+          >
+            <item
+              :text="task.name"
+              :isChecked="task.complete"
+              v-model="task.complete"
+            ></item>
+          </li>
+        </ul>
       </ui-tab>
     </ui-tabs>
 
@@ -54,7 +44,7 @@
       ></ui-textbox>
       <ui-button
         color="primary"
-        :disabled="!checkLength"
+        :disabled="!isAdd"
         @click="addTask"
         class="button"
         >Add item</ui-button
@@ -72,8 +62,7 @@ export default {
     return {
       newTaskName: "",
       tasks: [],
-      isAdd: false,
-      stateTabs: [{ title: "Pending" }, { title: "Completed" }],
+      isAddButtonEnable: false,
     };
   },
   created: function () {
@@ -91,13 +80,19 @@ export default {
     },
   },
   computed: {
-    checkLength: function() {
-     return this.isAdd = this.newTaskName.length > 0;
-    }
-  }, 
+    isAdd() {
+      return this.newTaskName.length > 0;
+    },
+    completedTasks() {
+      return this.tasks.filter((task) => task.complete);
+    },
+    pendingTasks() {
+      return this.tasks.filter((task) => !task.complete);
+    },
+  },
   methods: {
     addTask() {
-      if (this.checkLength) {
+      if (this.isAdd) {
         this.tasks.push({ name: this.newTaskName, complete: false });
         this.newTaskName = "";
       }
@@ -116,9 +111,6 @@ export default {
 
   .title {
     margin-top: 0;
-  }
-  .tabs {
-    padding: 0;
   }
   .tasks {
     list-style: none;
