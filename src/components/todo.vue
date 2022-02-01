@@ -2,7 +2,11 @@
   <div class="todo">
     <h1 class="title">Checklist</h1>
     <ui-tabs backgroundColor="clear">
-      <ui-tab :key="tab.title" :title="tab.title" v-for="tab in stateTabs">
+      <ui-tab
+        :key="tab.title"
+        :title="tab.title"
+        v-for="tab in stateTabs"
+      >
         <div v-if="tab.title === 'Pending'">
           <ul class="tasks">
             <li
@@ -43,7 +47,7 @@
     <div class="add">
       <ui-textbox
         class="textbox"
-        :maxlength=100
+        :maxlength="100"
         placeholder="e.g. 'read vue.js guide'"
         v-model="newTaskName"
         @keydown-enter="addTask"
@@ -97,8 +101,6 @@ export default {
     addTask() {
       if (this.newTaskName.length > 0) {
         this.tasks.push({ name: this.newTaskName, complete: false });
-        const lastTask = this.tasks[this.tasks.length - 1];
-        localStorage.setItem(this.tasks.length - 1, JSON.stringify(lastTask));
         this.newTaskName = "";
       }
     },
@@ -117,7 +119,9 @@ export default {
   .title {
     margin-top: 0;
   }
-
+  .tabs {
+    padding: 0;
+  }
   .tasks {
     list-style: none;
     padding: 0;
