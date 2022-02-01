@@ -54,7 +54,7 @@
       ></ui-textbox>
       <ui-button
         color="primary"
-        :disabled="!isAdd"
+        :disabled="!checkLength"
         @click="addTask"
         class="button"
         >Add item</ui-button
@@ -89,17 +89,15 @@ export default {
       },
       deep: true,
     },
-    newTaskName: function (val) {
-      if (val.length > 0) {
-        this.isAdd = true;
-      } else {
-        this.isAdd = false;
-      }
-    },
   },
+  computed: {
+    checkLength: function() {
+     return this.isAdd = this.newTaskName.length > 0;
+    }
+  }, 
   methods: {
     addTask() {
-      if (this.newTaskName.length > 0) {
+      if (this.checkLength) {
         this.tasks.push({ name: this.newTaskName, complete: false });
         this.newTaskName = "";
       }
