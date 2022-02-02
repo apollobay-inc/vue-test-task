@@ -12,6 +12,7 @@
     "keen-ui": "^1.0.0",
     "vue": "^2.1.10",
     "vue-router": "^2.2.0",
+    "vue2-perfect-scrollbar": "^1.5.2",
     "vuex": "^2.1.2"
   },
   "devDependencies": {

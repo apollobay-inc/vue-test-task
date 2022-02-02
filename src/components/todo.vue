@@ -1,26 +1,50 @@
 <template>
     <div class="todo">
         <h1 class="title">Checklist</h1>
-        <ul class="tasks">
-            <li v-for="task in tasks" :class="{complete : task.complete}">
-                <label>
-                    <input type="checkbox" v-model="task.complete" />
-                    {{task.name}}
-                </label>
-            </li>
-        </ul>
-        <div>
-            <ui-textbox placeholder="e.g. 'read vue.js guide'" v-model="newTaskName"></ui-textbox>
+        <ui-tabs class="tasks">
+            <ui-tab
+                :key="tab.title"
+                :selected="tab.title === 'completeTasks'"
+                :title="tab.title"
+                v-for="tab in tabs"
+            >
+                <template v-if="tab.title === 'Pending'">
+                    <todo-item :tasks="completeTasks"></todo-item>
+                </template>
+                <template v-else>
+                    <todo-item :tasks="pendingTasks"></todo-item>
+                </template>
+            </ui-tab>
+        </ui-tabs>
+
+
+        <div class="add-note">
+            <ui-textbox
+                class="input"
+                placeholder="e.g. 'read vue.js guide'"
+                v-model.trim="newTask.name"
+                @keydown.enter="addTask">
+            </ui-textbox>
             <ui-button color="primary" @click="addTask" icon="add">Add</ui-button>
         </div>
     </div>
 </template>
 
 <script>
-    export default {
+import TodoItem from './TodoItem.vue';
+
+export default {
+        components:{ TodoItem },
         data () {
-            return {
-                newTaskName : '',
+                return {
+                tabs: [
+                    {title: 'Complete'},
+                    {title: 'Pending'},
+                ],
+                newTask : {
+                    name : '',
+                    complete : false
+                },
                 tasks : [
                     {name : 'create skeleton of todo', complete : true},
                     {name : 'add ability to add tasks', complete : true},
@@ -38,10 +62,58 @@
                 ]
             }
         },
-
+        computed: {
+            completeTasks() {
+                return this.tasks.filter((task) => {
+                    if (task.complete === true) {
+                        return task;
+                    }
+                });
+            },
+            pendingTasks() {
+                return this.tasks.filter((task) => {
+                    if (task.complete !== true) {
+                        return task;
+                    }
+                });
+            }
+        },
         methods : {
             addTask () {
-                this.tasks.push({name : this.newTaskName, complete : false});
+                const { name, complete } = this.newTask;
+                const id = new Date(Date.now()).toLocaleString();
+
+                if (name === '') return;
+
+                this.tasks.push({
+                    id,
+                    name,
+                    complete
+                });
+
+                this.setLocalTasks();
+
+                this.clearFiled();
+            },
+            clearFiled() {
+                this.newTask.name = '';
+            },
+            setLocalTasks() {
+                const parsed = JSON.stringify(this.tasks);
+                localStorage.setItem('tasks', parsed);
+            }
+        },
+        mounted() {
+            if (localStorage.tasks) {
+                this.tasks = JSON.parse(localStorage.getItem('tasks'));
+            }
+        },
+        watch: {
+            tasks: {
+                handler(val){
+                    this.setLocalTasks();
+                },
+                deep: true
             }
         }
     };
@@ -49,11 +121,16 @@
 
 <style scoped lang="scss">
     .todo {
+        width: 100%;
+        max-width: 800px;
+        min-height: 600px;
         margin: auto;
         background: #fff;
         padding: 20px;
         border-radius: 5px;
         box-shadow: rgba(0, 0, 0, 0.3) 3px 3px 15px;
+        display: flex;
+        flex-direction: column;
 
         .title {
             margin-top: 0;
@@ -62,6 +139,20 @@
         .tasks {
             list-style: none;
             padding: 0;
+            margin-bottom: auto;
+
+            height: 400px;
+            overflow-y: scroll;
+        }
+
+        .add-note {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            .input {
+                width: 70%;
+            }
         }
     }
 </style>

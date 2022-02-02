@@ -9,7 +9,11 @@ import router from './router';
 import KeenUI from 'keen-ui';
 import 'keen-ui/dist/keen-ui.css';
 
+import PerfectScrollbar from 'vue2-perfect-scrollbar';
+
 Vue.use(KeenUI);
+Vue.use(PerfectScrollbar);
+
 
 /* eslint-disable no-new */
 new Vue({
