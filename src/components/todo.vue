@@ -9,36 +9,10 @@
                 v-for="tab in tabs"
             >
                 <template v-if="tab.title === 'Pending'">
-                    <li
-                        v-for="task in completeTasks"
-                        :class="['task', {complete : task.complete}]"
-                        :key="task.id"
-                    >
-                        <label>
-                            <ui-checkbox
-                                class="checkbox"
-                                type="checkbox"
-                                v-model="task.complete"
-                            />
-                            {{task.name}}
-                        </label>
-                    </li>
+                    <todo-item :tasks="completeTasks"></todo-item>
                 </template>
                 <template v-else>
-                    <li
-                        v-for="task in pendingTasks"
-                        :class="['task', {complete : task.complete}]"
-                        :key="task.id"
-                    >
-                        <label>
-                            <ui-checkbox
-                                class="checkbox"
-                                type="checkbox"
-                                v-model="task.complete"
-                            />
-                            {{task.name}}
-                        </label>
-                    </li>
+                    <todo-item :tasks="pendingTasks"></todo-item>
                 </template>
             </ui-tab>
         </ui-tabs>
@@ -57,9 +31,12 @@
 </template>
 
 <script>
+import TodoItem from './TodoItem.vue';
+
 export default {
+        components:{ TodoItem },
         data () {
-            return {
+                return {
                 tabs: [
                     {title: 'Complete'},
                     {title: 'Pending'},
@@ -114,10 +91,29 @@ export default {
                     complete
                 });
 
+                this.setLocalTasks();
+
                 this.clearFiled();
             },
             clearFiled() {
                 this.newTask.name = '';
+            },
+            setLocalTasks() {
+                const parsed = JSON.stringify(this.tasks);
+                localStorage.setItem('tasks', parsed);
+            }
+        },
+        mounted() {
+            if (localStorage.tasks) {
+                this.tasks = JSON.parse(localStorage.getItem('tasks'));
+            }
+        },
+        watch: {
+            tasks: {
+                handler(val){
+                    this.setLocalTasks();
+                },
+                deep: true
             }
         }
     };
@@ -145,21 +141,8 @@ export default {
             padding: 0;
             margin-bottom: auto;
 
-            ::-webkit-scrollbar {
-            width: 2px;
-            height: 2px;
-            }
-
-            .task {
-            & > label {
-                display: flex;
-                align-items: flex-start;
-            }
-
-            .checkbox {
-                margin-right: 20px;
-            }
-        }
+            height: 400px;
+            overflow-y: scroll;
         }
 
         .add-note {
@@ -170,10 +153,6 @@ export default {
             .input {
                 width: 70%;
             }
-        }
-
-        .complete {
-            text-decoration: line-through;
         }
     }
 </style>
