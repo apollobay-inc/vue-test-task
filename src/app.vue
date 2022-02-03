@@ -16,6 +16,7 @@
         margin: 0;
         padding: 0;
         background: #eee;
+        scrollbar-width: none;
     }
 
     #app {
