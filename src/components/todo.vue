@@ -1,11 +1,18 @@
 <template>
     <div class="todo">
         <h1 class="title">Checklist</h1>
-        <ul class="tasks">
-            <li v-for="task in tasks" :class="{complete : task.complete}">
-                <ui-checkbox v-model="task.complete">{{task.name}}</ui-checkbox>
-            </li>
-        </ul>
+        <ui-tabs fullwidth>
+            <ui-tab :key="complete" v-for="tab in tabs">
+                <div slot="header" class="tab-header">
+                    <span>{{ tab.title }}: </span>
+                </div>
+                <ul class="tasks">
+                    <li v-for="task in tasks" :class="{complete : task.complete}" v-if="task.complete == tab.complete">
+                        <ui-checkbox v-model="task.complete">{{task.name}}</ui-checkbox>
+                    </li>
+                </ul>
+            </ui-tab>
+        </ui-tabs>
         <div class="input__wrapper">
             <ui-textbox placeholder="e.g. 'read vue.js guide'" v-model="newTaskName" class="input" v-on:keyup.native.enter="addTask"></ui-textbox>
             <ui-button color="primary" @click="addTask" icon="add">Add</ui-button>
@@ -32,6 +39,10 @@
                     {name : 'extract list item into a separate vue.js component', complete : false},
                     {name : 'persist tasks list in a local storage', complete : false},
                     {name : 'add animation on task completion', complete : false},
+                ],
+                tabs : [
+                    { title: "Complete", complete : true },
+                    { title: "Pending", complete : false }
                 ]
             }
         },
