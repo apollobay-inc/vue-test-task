@@ -15,7 +15,7 @@
         </ui-tabs>
         <div class="input__wrapper">
             <ui-textbox placeholder="e.g. 'read vue.js guide'" v-model="newTaskName" class="input" v-on:keyup.native.enter="addTask"></ui-textbox>
-            <ui-button color="primary" @click="addTask" icon="add" v-bind:disabled='!isDisabled'>Add</ui-button>
+            <ui-button color="primary" @click="addTask" icon="add" class="add-task-btn" v-bind:disabled='!isDisabled'>Add</ui-button>
         </div>
     </div>
 </template>
@@ -78,18 +78,27 @@
         .tasks {
             list-style: none;
             padding: 0;
+            max-height: 300px;
+            overflow-y: auto;
         }
     }
     .input__wrapper{
         display: flex;
         justify-content: space-between;
-        flex-wrap: wrap;
+        //flex-wrap: wrap;
     }
     .input{
         width: 100%;
-        max-width: 80%;
+        max-width: 70%;
+        flex-shrink: 2;
+    }
+    .add-task-btn{
+        flex-shrink: 0;
     }
     .complete{
         text-decoration: line-through;
+    }
+    .ui-tabs{
+        width: 370px;
     }
 </style>
