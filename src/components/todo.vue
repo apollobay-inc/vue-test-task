@@ -16,8 +16,17 @@
             </ui-tab>
         </ui-tabs>
         <div class="input__wrapper">
-            <ui-textbox placeholder="e.g. 'read vue.js guide'" v-model="newTaskName" class="input" v-on:keyup.native.enter="addTask"></ui-textbox>
-            <ui-button color="primary" @click="addTask" icon="add" class="add-task-btn" v-bind:disabled='!isDisabled'>Add</ui-button>
+            <ui-textbox
+                placeholder="e.g. 'read vue.js guide'"
+                v-model="newTaskName"
+                class="input"
+                v-on:keyup.native.enter="addTask"></ui-textbox>
+            <ui-button
+                color="primary"
+                @click="addTask"
+                icon="add"
+                class="add-task-btn"
+                v-bind:disabled='!isDisabled'>Add</ui-button>
         </div>
     </div>
 </template>
@@ -57,14 +66,37 @@
                 if( this.newTaskName !== '' && this.newTaskName !== null && this.newTaskName.length > 0 ) {
                     this.tasks.push({name: this.newTaskName, complete: false});
                     this.newTaskName = "";
+                    this.saveTasks();
                 }
-            }
+            },
+            saveTasks() {
+                let parsed = JSON.stringify(this.tasks);
+                localStorage.setItem('tasks', parsed);
+            },
         },
         computed: {
             isDisabled() {
                 return this.newTaskName.length > 0;
+            },
+            task() {
+                return this.data;
             }
         },
+        mounted() {
+            if (localStorage.tasks) {
+                const restoredSession = JSON.parse(localStorage.getItem('tasks'));
+                this.tasks = restoredSession;
+            }
+        },
+        watch: {
+            tasks: {
+                handler: function () {
+                    let parsed = JSON.stringify(this.tasks);
+                    localStorage.setItem('tasks', parsed);
+                },
+                deep: true
+            },
+        }
     };
 </script>
 
