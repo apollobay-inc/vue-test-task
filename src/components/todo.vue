@@ -3,10 +3,7 @@
         <h1 class="title">Checklist</h1>
         <ul class="tasks">
             <li v-for="task in tasks" :class="{complete : task.complete}">
-                <label>
-                    <input type="checkbox" v-model="task.complete" />
-                    {{task.name}}
-                </label>
+                <ui-checkbox v-model="task.complete">{{task.name}}</ui-checkbox>
             </li>
         </ul>
         <div class="input__wrapper">
