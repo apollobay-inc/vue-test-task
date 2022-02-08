@@ -2,7 +2,7 @@
     <div class="todo">
         <h1 class="title">Checklist</h1>
         <ui-tabs fullwidth>
-            <ui-tab :key="complete" v-for="tab in tabs">
+            <ui-tab v-for="tab in tabs">
                 <div slot="header" class="tab-header">
                     <span>{{ tab.title }}: </span>
                 </div>
@@ -15,7 +15,7 @@
         </ui-tabs>
         <div class="input__wrapper">
             <ui-textbox placeholder="e.g. 'read vue.js guide'" v-model="newTaskName" class="input" v-on:keyup.native.enter="addTask"></ui-textbox>
-            <ui-button color="primary" @click="addTask" icon="add">Add</ui-button>
+            <ui-button color="primary" @click="addTask" icon="add" v-bind:disabled='!isDisabled'>Add</ui-button>
         </div>
     </div>
 </template>
@@ -49,13 +49,17 @@
 
         methods : {
             addTask () {
-                this.tasks.push({name : this.newTaskName, complete : false});
-                this.newTaskName = "";
-            },
-            onEnter () {
-                console.log('on enter event');
+                if( this.newTaskName !== '' && this.newTaskName !== null && this.newTaskName.length > 0 ) {
+                    this.tasks.push({name: this.newTaskName, complete: false});
+                    this.newTaskName = "";
+                }
             }
-        }
+        },
+        computed: {
+            isDisabled() {
+                return this.newTaskName.length > 0;
+            }
+        },
     };
 </script>
 
