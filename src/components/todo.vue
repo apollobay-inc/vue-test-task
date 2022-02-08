@@ -9,8 +9,8 @@
                 </label>
             </li>
         </ul>
-        <div>
-            <ui-textbox placeholder="e.g. 'read vue.js guide'" v-model="newTaskName"></ui-textbox>
+        <div class="input__wrapper">
+            <ui-textbox placeholder="e.g. 'read vue.js guide'" v-model="newTaskName" class="input"></ui-textbox>
             <ui-button color="primary" @click="addTask" icon="add">Add</ui-button>
         </div>
     </div>
@@ -64,5 +64,14 @@
             list-style: none;
             padding: 0;
         }
+    }
+    .input__wrapper{
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+    .input{
+        width: 100%;
+        max-width: 80%;
     }
 </style>
