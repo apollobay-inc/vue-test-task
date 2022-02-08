@@ -42,6 +42,7 @@
         methods : {
             addTask () {
                 this.tasks.push({name : this.newTaskName, complete : false});
+                this.newTaskName = "";
             }
         }
     };
