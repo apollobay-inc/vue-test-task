@@ -6,6 +6,7 @@
         @change="onChange"
         value=""
         :class="{ complete: isChecked }"
+        :disabled="onEditState"
       >
         <ui-textbox
           v-if="onEditState"
