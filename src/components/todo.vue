@@ -10,7 +10,7 @@
             </li>
         </ul>
         <div class="input__wrapper">
-            <ui-textbox placeholder="e.g. 'read vue.js guide'" v-model="newTaskName" class="input"></ui-textbox>
+            <ui-textbox placeholder="e.g. 'read vue.js guide'" v-model="newTaskName" class="input" v-on:keyup.native.enter="addTask"></ui-textbox>
             <ui-button color="primary" @click="addTask" icon="add">Add</ui-button>
         </div>
     </div>
@@ -43,6 +43,9 @@
             addTask () {
                 this.tasks.push({name : this.newTaskName, complete : false});
                 this.newTaskName = "";
+            },
+            onEnter () {
+                console.log('on enter event');
             }
         }
     };
