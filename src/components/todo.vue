@@ -74,4 +74,7 @@
         width: 100%;
         max-width: 80%;
     }
+    .complete{
+        text-decoration: line-through;
+    }
 </style>
