@@ -12,6 +12,8 @@
               :text="task.name"
               :isChecked="task.complete"
               @delete="deleteTask(task.id)"
+              @edit="editTask(task)"
+              @confirm="confirmNewText"
               v-model="task.complete"
             ></item>
           </li>
@@ -27,6 +29,8 @@
               :text="task.name"
               :isChecked="task.complete"
               @delete="deleteTask(task.id)"
+              @edit="editTask(task)"
+              @confirm="confirmNewText"
               v-model="task.complete"
             ></item>
           </li>
@@ -61,6 +65,7 @@ export default {
   data() {
     return {
       newTaskName: "",
+      desiredTask: {},
       tasks: [],
     };
   },
@@ -103,6 +108,12 @@ export default {
     deleteTask(id) {
       const indexOfTask = this.tasks.findIndex(task => task.id === id);
       this.tasks.splice(indexOfTask, 1);
+    },
+    editTask(task) {
+     this.desiredTask = task;
+    },
+    confirmNewText (text) {
+      this.desiredTask.name = text;
     },
     createId() {
         return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) =>

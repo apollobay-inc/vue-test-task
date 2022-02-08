@@ -1,12 +1,39 @@
 <template>
   <div class="checkbox">
     <label class="todo">
-      <ui-checkbox :checked="isChecked" @change="onChange" value="" :class="{complete: isChecked}">
-        {{ text }}
+      <ui-checkbox
+        :checked="isChecked"
+        @change="onChange"
+        value=""
+        :class="{ complete: isChecked }"
+      >
+        <ui-textbox
+          v-if="onEditState"
+          :value="text"
+          v-model="newTaskName"
+          @keydown-enter="confirmNewTaskText(newTaskName)"
+        />
+        <template v-else>{{ text }}</template>
       </ui-checkbox>
     </label>
     <div class="delete">
-    <ui-button color="red" icon="delete" @click="onDelete" type="secondary">Delete</ui-button>
+      <ui-icon-button
+        color="primary"
+        has-dropdown
+        icon="more_vert"
+        ref="dropdownButton"
+        :size="size"
+      >
+        <ui-menu
+          contain-focus
+          has-icons
+          slot="dropdown"
+          :options="menuOptions"
+          @close="$refs.dropdownButton.closeDropdown()"
+          @select="selectOption"
+        >
+        </ui-menu>
+      </ui-icon-button>
     </div>
   </div>
 </template>
@@ -14,7 +41,21 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      size: "normal",
+      onEditState: false,
+      newTaskName: this.text,
+      menuOptions: [
+        {
+          label: "Edit",
+          icon: "edit",
+        },
+        {
+          label: "Delete",
+          icon: "delete",
+        },
+      ],
+    };
   },
   model: {
     event: "change",
@@ -28,9 +69,25 @@ export default {
     onChange(event) {
       this.$emit("change", event);
     },
-    onDelete(){
+    onDelete() {
       this.$emit("delete");
-    }
+    },
+    onEdit(event) {
+      this.onEditState = true;
+      this.$emit("edit", event);
+    },
+    confirmNewTaskText(event) {
+      this.onEditState = false;
+      this.$emit("confirm", event)
+    },
+    selectOption(option) {
+      if (option.label === "Delete") {
+        return this.onDelete();
+      }
+      if (option.label === "Edit") {
+        return this.onEdit();
+      }
+    },
   },
 };
 </script>
@@ -39,14 +96,15 @@ export default {
 .checkbox {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding-bottom: 5px;
   .delete {
     padding-left: 10px;
   }
   .todo {
     padding-top: 5px;
-    .complete{
-    text-decoration: line-through;
+    .complete {
+      text-decoration: line-through;
     }
   }
 }
