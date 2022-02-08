@@ -11,7 +11,8 @@
                         v-for="task in tasks"
                         v-bind:task="task"
                         :class="{complete : task.complete}"
-                        v-if="task.complete == tab.complete"></list-item>
+                        v-if="task.complete == tab.complete"
+                        @remove="removeTask"></list-item>
                 </ul>
             </ui-tab>
         </ui-tabs>
@@ -73,13 +74,16 @@
                 let parsed = JSON.stringify(this.tasks);
                 localStorage.setItem('tasks', parsed);
             },
+            removeTask(item) {
+                this.tasks = this.tasks.filter(function(value) {
+                    return item !== value
+                })
+                this.saveTasks();
+            },
         },
         computed: {
             isDisabled() {
                 return this.newTaskName.length > 0;
-            },
-            task() {
-                return this.data;
             }
         },
         mounted() {
@@ -132,7 +136,7 @@
     .add-task-btn{
         flex-shrink: 0;
     }
-    .complete{
+    .complete label{
         text-decoration: line-through;
     }
     .ui-tabs{
