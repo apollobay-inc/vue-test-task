@@ -7,9 +7,11 @@
                     <span>{{ tab.title }}: </span>
                 </div>
                 <ul class="tasks">
-                    <li v-for="task in tasks" :class="{complete : task.complete}" v-if="task.complete == tab.complete">
-                        <ui-checkbox v-model="task.complete">{{task.name}}</ui-checkbox>
-                    </li>
+                    <list-item
+                        v-for="task in tasks"
+                        v-bind:task="task"
+                        :class="{complete : task.complete}"
+                        v-if="task.complete == tab.complete"></list-item>
                 </ul>
             </ui-tab>
         </ui-tabs>
@@ -21,6 +23,7 @@
 </template>
 
 <script>
+    import listItem from "./listItem";
     export default {
         data () {
             return {
@@ -46,7 +49,9 @@
                 ]
             }
         },
-
+        components : {
+            listItem
+        },
         methods : {
             addTask () {
                 if( this.newTaskName !== '' && this.newTaskName !== null && this.newTaskName.length > 0 ) {
