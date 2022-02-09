@@ -136,9 +136,6 @@
     .add-task-btn{
         flex-shrink: 0;
     }
-    .complete label{
-        text-decoration: line-through;
-    }
     .ui-tabs{
         width: 370px;
     }
