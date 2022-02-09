@@ -1,22 +1,39 @@
 <template>
     <div class="todo">
         <h1 class="title">Checklist</h1>
-        <ul class="tasks">
-            <li v-for="task in tasks" :class="{complete : task.complete}">
-                <label>
-                    <input type="checkbox" v-model="task.complete" />
-                    {{task.name}}
-                </label>
-            </li>
-        </ul>
-        <div>
-            <ui-textbox placeholder="e.g. 'read vue.js guide'" v-model="newTaskName"></ui-textbox>
-            <ui-button color="primary" @click="addTask" icon="add">Add</ui-button>
+        <ui-tabs fullwidth>
+            <ui-tab v-for="tab in tabs">
+                <div slot="header" class="tab-header">
+                    <span>{{ tab.title }}: </span>
+                </div>
+                <ul class="tasks">
+                    <list-item
+                        v-for="task in tasks"
+                        v-bind:task="task"
+                        :class="{complete : task.complete}"
+                        v-if="task.complete == tab.complete"
+                        @remove="removeTask"></list-item>
+                </ul>
+            </ui-tab>
+        </ui-tabs>
+        <div class="input__wrapper">
+            <ui-textbox
+                placeholder="e.g. 'read vue.js guide'"
+                v-model="newTaskName"
+                class="input"
+                v-on:keyup.native.enter="addTask"></ui-textbox>
+            <ui-button
+                color="primary"
+                @click="addTask"
+                icon="add"
+                class="add-task-btn"
+                v-bind:disabled='!isDisabled'>Add</ui-button>
         </div>
     </div>
 </template>
 
 <script>
+    import listItem from "./listItem";
     export default {
         data () {
             return {
@@ -35,14 +52,54 @@
                     {name : 'extract list item into a separate vue.js component', complete : false},
                     {name : 'persist tasks list in a local storage', complete : false},
                     {name : 'add animation on task completion', complete : false},
+                ],
+                tabs : [
+                    { title: "Complete", complete : true },
+                    { title: "Pending", complete : false }
                 ]
             }
         },
-
+        components : {
+            listItem
+        },
         methods : {
             addTask () {
-                this.tasks.push({name : this.newTaskName, complete : false});
+                if( this.newTaskName !== '' && this.newTaskName !== null && this.newTaskName.length > 0 ) {
+                    this.tasks.push({name: this.newTaskName, complete: false});
+                    this.newTaskName = "";
+                    this.saveTasks();
+                }
+            },
+            saveTasks() {
+                let parsed = JSON.stringify(this.tasks);
+                localStorage.setItem('tasks', parsed);
+            },
+            removeTask(item) {
+                this.tasks = this.tasks.filter(function(value) {
+                    return item !== value
+                })
+                this.saveTasks();
+            },
+        },
+        computed: {
+            isDisabled() {
+                return this.newTaskName.length > 0;
             }
+        },
+        mounted() {
+            if (localStorage.tasks) {
+                const restoredSession = JSON.parse(localStorage.getItem('tasks'));
+                this.tasks = restoredSession;
+            }
+        },
+        watch: {
+            tasks: {
+                handler: function () {
+                    let parsed = JSON.stringify(this.tasks);
+                    localStorage.setItem('tasks', parsed);
+                },
+                deep: true
+            },
         }
     };
 </script>
@@ -62,6 +119,24 @@
         .tasks {
             list-style: none;
             padding: 0;
+            max-height: 300px;
+            overflow-y: auto;
         }
+    }
+    .input__wrapper{
+        display: flex;
+        justify-content: space-between;
+        //flex-wrap: wrap;
+    }
+    .input{
+        width: 100%;
+        max-width: 70%;
+        flex-shrink: 2;
+    }
+    .add-task-btn{
+        flex-shrink: 0;
+    }
+    .ui-tabs{
+        width: 370px;
     }
 </style>
